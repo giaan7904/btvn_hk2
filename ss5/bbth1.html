@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game đoán chữ</title>
+  <script src="/btvn_hk2/ss5/btth1.js"></script>
+  <style>
+   body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  text-align: center;
+}
+
+#game-box {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+input {
+  margin: 5px;
+}
+
+  </style>
+</head>
+<body>
+    <div class="container">
+        <div id="game-box">
+          <h1>Game đoán chữ </h1>
+          <div id="word-container">
+            <p></p>
+          </div>
+          <p>Chữ cần phải đoán :</p>
+          <input type="text" id="guess-input">
+          <button onclick="guessLetter()" class="button">Đoán</button>
+          <p>Số lần còn lại : <span id="attempts"></span></p>
+          <p id="message"></p>
+          <button onclick="playAgain()" class="button">Chơi lại</button>
+        </div>
+      </div>
+</body>
+</html>

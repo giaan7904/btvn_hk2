@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToDo app</title>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 0 20px;
+  background-color: #f0f8ff; /* Màu xanh dương nhạt */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+#todo-app {
+  padding: 20px;
+}
+
+#todo-input {
+  width: calc(100% - 40px);
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#todo-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.delete-btn {
+  padding: 5px 10px;
+  margin-left: 5px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+
+.delete-btn:hover {
+  background-color: #0056b3;
+}
+
+#filter-buttons {
+  margin-top: 20px;
+}
+
+#filter-buttons button {
+  padding: 5px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+
+#filter-buttons button:hover {
+  background-color: #0056b3;
+}
+
+#search {
+  width: calc(100% - 40px);
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+
+  </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ToDo app</h1>
+        <div id="todo-app">
+          <input type="text" id="todo-input" placeholder="Add todo here...">
+          <ul id="todo-list"></ul>
+          <div id="filter-buttons">
+            <button id="all">Tất cả</button>
+            <button id="active">Chưa hoàn thành</button>
+            <button id="completed">Đã hoàn thành</button>
+            <input type="text" id="search" placeholder="Find todo here...">
+          </div>
+         
+        </div>
+      </div>
+
+  <script type="module" src="/btth3.js"></script>
+</body>
+</html>
