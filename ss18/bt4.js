@@ -1,34 +1,47 @@
 "use strict";
-// Hàm để validate tham số truyền vào hàm
-function validate(validationFunction) {
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+// Hàm decorator để validate tham số truyền vào hàm
+function validateParams(...validationFunctions) {
     return function (target, propertyKey, descriptor) {
-        let originalMethod = descriptor.value;
-        // Thay thế hàm gốc bằng hàm mới
+        const originalMethod = descriptor.value;
+        // Override hàm gốc
         descriptor.value = function (...args) {
-            // Duyệt qua tất cả tham số
-            for (let arg of args) {
-                // Nếu hàm validation trả về false, trả về lỗi
-                if (!validationFunction(arg)) {
-                    throw new Error(`Invalid argument: ${arg}`);
+            // Duyệt qua từng tham số
+            for (let i = 0; i < args.length; i++) {
+                const validationFunction = validationFunctions[i];
+                // Nếu hàm validation tồn tại và trả về false, ném ra lỗi
+                if (validationFunction && !validationFunction(args[i])) {
+                    throw new Error(`Invalid argument at index ${i}`);
                 }
             }
-            // Nếu tất cả tham số đều hợp lệ, thực thi hàm gốc
+            // Thực thi hàm gốc với tham số đã được validate
             return originalMethod.apply(this, args);
         };
         return descriptor;
     };
 }
-// Hàm validation kiểm tra xem tham số có phải là số không
-function isNumber(arg) {
-    return typeof arg === 'number';
+// Hàm validation kiểm tra xem giá trị có phải là chuỗi không
+function isString(value) {
+    return typeof value === 'string';
 }
-class MyClass {
-    add(a, b) {
-        return a + b;
+// Hàm validation kiểm tra xem giá trị có phải là số không
+function isNumber(value) {
+    return typeof value === 'number';
+}
+class InputClass {
+    // Sử dụng decorator để validate tham số truyền vào hàm
+    myMethod(arg1, arg2) {
+        console.log(`arg1: ${arg1}, arg2: ${arg2}`);
     }
 }
-// Áp dụng hàm validate
-Object.defineProperty(MyClass.prototype, 'add', validate(isNumber)(MyClass.prototype, 'add', Object.getOwnPropertyDescriptor(MyClass.prototype, 'add')));
-let myObject = new MyClass();
-console.log(myObject.add(5, 7)); // Output: 12
-console.log(myObject.add(5, "hello")); // Throws Error: Invalid argument: hello
+__decorate([
+    validateParams(isString, isNumber)
+], InputClass.prototype, "myMethod", null);
+const myClass = new MyClass();
+myClass.myMethod('hello', 42); // Kết quả: arg1: hello, arg2: 42
+myClass.myMethod('hello', 'world'); // Lỗi: Invalid argument at index 1

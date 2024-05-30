@@ -1,40 +1,50 @@
-// Hàm để validate tham số truyền vào hàm
-function validate(validationFunction) {
-    return function (target, propertyKey, descriptor) {
-        let originalMethod = descriptor.value;
+// Định nghĩa kiểu cho hàm validation
+interface ValidationFunction {
+    (value: any): boolean;
+}
 
-        // Thay thế hàm gốc bằng hàm mới
-        descriptor.value = function (...args) {
-            // Duyệt qua tất cả tham số
-            for (let arg of args) {
-                // Nếu hàm validation trả về false, trả về lỗi
-                if (!validationFunction(arg)) {
-                    throw new Error(`Invalid argument: ${arg}`);
+// Hàm decorator để validate tham số truyền vào hàm
+function validateParams(...validationFunctions: ValidationFunction[]) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        const originalMethod = descriptor.value;
+
+        // Override hàm gốc
+        descriptor.value = function (...args: any[]) {
+            // Duyệt qua từng tham số
+            for (let i = 0; i < args.length; i++) {
+                const validationFunction = validationFunctions[i];
+                // Nếu hàm validation tồn tại và trả về false, ném ra lỗi
+                if (validationFunction && !validationFunction(args[i])) {
+                    throw new Error(`Invalid argument at index ${i}`);
                 }
             }
 
-            // Nếu tất cả tham số đều hợp lệ, thực thi hàm gốc
+            // Thực thi hàm gốc với tham số đã được validate
             return originalMethod.apply(this, args);
-        }
+        };
 
         return descriptor;
+    };
+}
+
+// Hàm validation kiểm tra xem giá trị có phải là chuỗi không
+function isString(value: any): boolean {
+    return typeof value === 'string';
+}
+
+// Hàm validation kiểm tra xem giá trị có phải là số không
+function isNumber(value: any): boolean {
+    return typeof value === 'number';
+}
+
+class InputClass {
+    // Sử dụng decorator để validate tham số truyền vào hàm
+    @validateParams(isString, isNumber)
+    myMethod(arg1: string, arg2: number): void {
+        console.log(`arg1: ${arg1}, arg2: ${arg2}`);
     }
 }
 
-// Hàm validation kiểm tra xem tham số có phải là số không
-function isNumber(arg) {
-    return typeof arg === 'number';
-}
-
-class MyClass {
-    add(a, b) {
-        return a + b;
-    }
-}
-
-// Áp dụng hàm validate
-Object.defineProperty(MyClass.prototype, 'add', validate(isNumber)(MyClass.prototype, 'add', Object.getOwnPropertyDescriptor(MyClass.prototype, 'add')));
-
-let myObject = new MyClass();
-console.log(myObject.add(5, 7));  // Output: 12
-console.log(myObject.add(5, "hello"));  // Throws Error: Invalid argument: hello
+const myClass = new MyClass();
+myClass.myMethod('hello', 42); // Kết quả: arg1: hello, arg2: 42
+myClass.myMethod('hello', 'world'); // Lỗi: Invalid argument at index 1
